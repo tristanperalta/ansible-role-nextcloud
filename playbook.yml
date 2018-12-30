@@ -39,7 +39,7 @@
 
     - name: download nextcloud
       unarchive:
-        src: https://download.nextcloud.com/server/releases/nextcloud-15.0.0.zip
+        src: https://download.nextcloud.com/server/releases/nextcloud-15.0.0.tar.bz2
         dest: "{{ web_dir }}"
         owner: "{{ web_user }}"
         group: "{{ web_group }}"
