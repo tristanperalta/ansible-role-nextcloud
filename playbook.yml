@@ -1,0 +1,98 @@
+- hosts: default
+  become: true
+  vars:
+    web_user: vagrant
+    web_group: www-data
+    web_dir: /var/www
+    ansible_python_interpreter: /usr/bin/python3
+    nextcloud_database_host: localhost
+    nextcloud_database_name: nextcloud
+    nextcloud_database_user: nc_user
+    nextcloud_database_password: c9ED89gkS4jbVSC3
+    nextcloud_path: "{{ web_dir }}/nextcloud"
+
+  handlers:
+    - name: restart apache2
+      service:
+        name: apache2
+        state: restarted
+  tasks:
+    - name: update and upgrade packages
+      apt:
+        update_cache: true
+        upgrade: true
+        cache_valid_time: 86400
+
+    - name: add web_user to group web_group
+      user:
+        name: "{{ web_user }}"
+        group: "{{ web_group }}"
+        append: yes
+
+    - name: make www dir
+      file:
+        path: "{{ web_dir }}"
+        state: directory
+        owner: "{{ web_user }}"
+        group: "{{ web_group }}"
+        recurse: true
+
+    - name: download nextcloud
+      unarchive:
+        src: nextcloud-15.0.0.tar.bz2
+        dest: "{{ web_dir }}"
+        owner: "{{ web_user }}"
+        group: "{{ web_group }}"
+        mode: "u+rw,g+rw"
+        remote_src: no
+
+    - name: install required packages
+      apt:
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - apache2
+          - php7.2
+          - bzip2
+          - libapache2-mod-php
+          - php-gd
+          - php-json
+          - php-curl
+          - php-mbstring
+          - php-intl
+          - php-imagick
+          - php-xml
+          - php-zip
+          - python3-psycopg2
+
+    - name: install database
+      apt:
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - postgresql
+          - php-pgsql
+
+    - name: add nextcloud database
+      become: true
+      become_user: postgres
+      postgresql_db:
+        name: "{{ nextcloud_database_name }}"
+
+    - name: add nextcloud role in posgresql
+      become: true
+      become_user: postgres
+      postgresql_user:
+        db: "{{ nextcloud_database_name }}"
+        name: "{{ nextcloud_database_user }}"
+        password: "{{ nextcloud_database_password }}"
+
+    - name: configure apache
+      template:
+        src: templates/apache-nextcloud.conf.j2
+        dest: /etc/apache2/sites-available/nextcloud.conf
+      notify: restart apache2
+
+    - name: enable nextcloud config
+      shell: "a2ensite nextcloud"
+
