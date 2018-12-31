@@ -1,7 +1,6 @@
 web_user: www-data
 web_group: www-data
 web_dir: /var/www
-ansible_python_interpreter: /usr/bin/python3
 nextcloud_database_host: localhost
 nextcloud_database_name: nextcloud
 nextcloud_database_user: nc_user
