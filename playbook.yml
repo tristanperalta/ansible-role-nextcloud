@@ -4,7 +4,10 @@
     ansible_python_interpreter: /usr/bin/python3
 
   handlers:
-    - include_tasks: handlers/main.yml
+    - name: restart apache2
+      service:
+        name: apache2
+        state: restarted
 
   tasks:
     - name: define default vars

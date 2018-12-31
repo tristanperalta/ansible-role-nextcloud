@@ -40,17 +40,7 @@
     group: "{{ web_group }}"
     mode: "u+rw,g+rw"
     remote_src: yes
-
-- name: make occ executable
-  file:
-    path: "{{ nextcloud_path }}/occ"
-    mode: "u+x,g+x"
-
-- name: execute install script via occ
-  shell: "./occ maintenance:install --database pgsql --database-name {{ nextcloud_database_name }} --database-host {{ nextcloud_database_host }} --database-port {{ nextcloud_database_port }} --database-user {{ nextcloud_database_user }} --database-pass {{ nextcloud_database_password }} --admin-user {{ nextcloud_admin_user }} --admin-pass {{ nextcloud_admin_password }}"
-  become: "{{ web_user }}"
-  args:
-    chdir: "{{ nextcloud_path }}"
+  when: false
 
 - name: add nextcloud database
   become: true
@@ -65,6 +55,18 @@
     db: "{{ nextcloud_database_name }}"
     name: "{{ nextcloud_database_user }}"
     password: "{{ nextcloud_database_password }}"
+
+- name: make occ executable
+  file:
+    path: "{{ nextcloud_path }}/occ"
+    mode: "u+x,g+x"
+
+- name: execute install script via occ
+  shell: "./occ maintenance:install --database pgsql --database-name {{ nextcloud_database_name }} --database-host {{ nextcloud_database_host }} --database-port {{ nextcloud_database_port }} --database-user {{ nextcloud_database_user }} --database-pass {{ nextcloud_database_password }} --admin-user {{ nextcloud_admin_user }} --admin-pass {{ nextcloud_admin_password }}"
+  become_user: "{{ web_user }}"
+  args:
+    chdir: "{{ nextcloud_path }}"
+
 
 - name: configure apache
   template:
