@@ -1,30 +1,10 @@
+- include_tasks: web.yml
 
 - name: update and upgrade packages
   apt:
     update_cache: true
     upgrade: true
     cache_valid_time: 86400
-
-- name: download nextcloud
-  unarchive:
-    src: https://download.nextcloud.com/server/releases/nextcloud-15.0.0.tar.bz2
-    dest: "{{ web_dir }}"
-    owner: "{{ web_user }}"
-    group: "{{ web_group }}"
-    mode: "u+rw,g+rw"
-    remote_src: yes
-  when: false
-
-- name: make occ executable
-  file:
-    path: "{{ nextcloud_path }}/occ"
-    mode: "u+x,g+x"
-
-- name: execute maintenance:isntall via occ
-  shell: "./occ maintenance:install --database pgsql --database-name {{ nextcloud_database_name }} --database-host {{ nextcloud_database_host }} --database-port {{ nextcloud_database_port }} --database-user {{ nextcloud_database_user }} --database-pass {{ nextcloud_database_password }} --admin-user {{ nextcloud_admin_user }} --admin-pass {{ nextcloud_admin_password }}"
-  become: "{{ web_user }}"
-  args:
-    chdir: "{{ nextcloud_path }}"
 
 - name: install required packages
   apt:
@@ -51,6 +31,26 @@
     packages:
       - postgresql
       - php-pgsql
+
+- name: download nextcloud
+  unarchive:
+    src: https://download.nextcloud.com/server/releases/nextcloud-15.0.0.tar.bz2
+    dest: "{{ web_dir }}"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    mode: "u+rw,g+rw"
+    remote_src: yes
+
+- name: make occ executable
+  file:
+    path: "{{ nextcloud_path }}/occ"
+    mode: "u+x,g+x"
+
+- name: execute install script via occ
+  shell: "./occ maintenance:install --database pgsql --database-name {{ nextcloud_database_name }} --database-host {{ nextcloud_database_host }} --database-port {{ nextcloud_database_port }} --database-user {{ nextcloud_database_user }} --database-pass {{ nextcloud_database_password }} --admin-user {{ nextcloud_admin_user }} --admin-pass {{ nextcloud_admin_password }}"
+  become: "{{ web_user }}"
+  args:
+    chdir: "{{ nextcloud_path }}"
 
 - name: add nextcloud database
   become: true

@@ -2,7 +2,8 @@
 
 ## Requirements
 
-1. Ansible
+1. Ubuntu 18.04
+1. Ansible 2.7
 1. Vagrant
 
 ## Instruction
@@ -12,4 +13,4 @@
   ```bash
   vagrant up
   ```
-1. Browse localhost:8080/nextcloud and configure admin user and database
+1. Browse localhost:8080/nextcloud
