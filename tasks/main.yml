@@ -6,6 +6,11 @@
     upgrade: true
     cache_valid_time: 86400
 
+- name: check if apt-get requires a reboot
+  command: test -f /var/run/reboot-required
+  register: apt_get_requires_reboot
+  ignore_errors: True
+
 - name: install required packages
   apt:
     name: "{{ packages }}"
@@ -61,11 +66,23 @@
     path: "{{ nextcloud_path }}/occ"
     mode: "u+x,g+x"
 
+- name: make config group readable
+  file:
+    path: "{{ nextcloud_path }}/config/"
+    mode: "g+w"
+    recurse: true
+
+- name: check if already configured
+  shell: "test -f {{ nextcloud_path }}/config/config.php"
+  register: nextcloud_configured
+  ignore_errors: true
+
 - name: execute install script via occ
   shell: "./occ maintenance:install --database pgsql --database-name {{ nextcloud_database_name }} --database-host {{ nextcloud_database_host }} --database-port {{ nextcloud_database_port }} --database-user {{ nextcloud_database_user }} --database-pass {{ nextcloud_database_password }} --admin-user {{ nextcloud_admin_user }} --admin-pass {{ nextcloud_admin_password }}"
   become_user: "{{ web_user }}"
   args:
     chdir: "{{ nextcloud_path }}"
+  when: nextcloud_configured is failure
 
 
 - name: configure apache
@@ -76,4 +93,11 @@
 
 - name: enable nextcloud config
   shell: "a2ensite nextcloud"
+
+- name: restart machine
+  command: shutdown -r now "ansible updates triggered"
+  when: apt_get_requires_reboot is success
+  async: 0
+  poll: 0
+  ignore_errors: True
 

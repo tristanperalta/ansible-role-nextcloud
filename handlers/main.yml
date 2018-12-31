@@ -2,3 +2,10 @@
   service:
     name: apache2
     state: restarted
+
+- name: restart machine
+  command: shutdown -r now "ansible updates triggered"
+  when: apt_get_requires_reboot|success
+  async: 0
+  poll: 0
+  ignore_errors: True
