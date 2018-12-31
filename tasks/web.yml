@@ -1,0 +1,18 @@
+- name: install apache
+  apt:
+    name: apache2
+
+- name: add web_user to group web_group
+  user:
+    name: "{{ web_user }}"
+    group: "{{ web_group }}"
+    append: yes
+
+- name: make www dir
+  file:
+    path: "{{ web_dir }}"
+    state: directory
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    recurse: true
+

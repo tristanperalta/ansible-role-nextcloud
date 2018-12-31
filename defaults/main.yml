@@ -1,4 +1,4 @@
-web_user: vagrant
+web_user: www-data
 web_group: www-data
 web_dir: /var/www
 ansible_python_interpreter: /usr/bin/python3
@@ -6,4 +6,7 @@ nextcloud_database_host: localhost
 nextcloud_database_name: nextcloud
 nextcloud_database_user: nc_user
 nextcloud_database_password: c9ED89gkS4jbVSC3
+nextcloud_database_port: 5432
+nextcloud_admin_user: default
+nextcloud_admin_password: secr3t
 nextcloud_path: "{{ web_dir }}/nextcloud"

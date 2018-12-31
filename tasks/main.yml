@@ -5,20 +5,6 @@
     upgrade: true
     cache_valid_time: 86400
 
-- name: add web_user to group web_group
-  user:
-    name: "{{ web_user }}"
-    group: "{{ web_group }}"
-    append: yes
-
-- name: make www dir
-  file:
-    path: "{{ web_dir }}"
-    state: directory
-    owner: "{{ web_user }}"
-    group: "{{ web_group }}"
-    recurse: true
-
 - name: download nextcloud
   unarchive:
     src: https://download.nextcloud.com/server/releases/nextcloud-15.0.0.tar.bz2
@@ -29,12 +15,22 @@
     remote_src: yes
   when: false
 
+- name: make occ executable
+  file:
+    path: "{{ nextcloud_path }}/occ"
+    mode: "u+x,g+x"
+
+- name: execute maintenance:isntall via occ
+  shell: "./occ maintenance:install --database pgsql --database-name {{ nextcloud_database_name }} --database-host {{ nextcloud_database_host }} --database-port {{ nextcloud_database_port }} --database-user {{ nextcloud_database_user }} --database-pass {{ nextcloud_database_password }} --admin-user {{ nextcloud_admin_user }} --admin-pass {{ nextcloud_admin_password }}"
+  become: "{{ web_user }}"
+  args:
+    chdir: "{{ nextcloud_path }}"
+
 - name: install required packages
   apt:
     name: "{{ packages }}"
   vars:
     packages:
-      - apache2
       - php7.2
       - bzip2
       - libapache2-mod-php
