@@ -78,7 +78,7 @@
   ignore_errors: true
 
 - name: execute install script via occ
-  shell: "./occ maintenance:install --database pgsql --database-name {{ nextcloud_database_name }} --database-host {{ nextcloud_database_host }} --database-port {{ nextcloud_database_port }} --database-user {{ nextcloud_database_user }} --database-pass {{ nextcloud_database_password }} --admin-user {{ nextcloud_admin_user }} --admin-pass {{ nextcloud_admin_password }}"
+  shell: "./occ maintenance:install --database pgsql --database-name {{ nextcloud_database_name }} --database-host {{ nextcloud_database_host }} --database-port {{ nextcloud_database_port }} --database-user {{ nextcloud_database_user }} --database-pass {{ nextcloud_database_password }} --admin-user {{ nextcloud_admin_user }} --admin-pass {{ nextcloud_admin_password }} --data-dir {{ nextcloud_data_dir }}"
   become_user: "{{ web_user }}"
   args:
     chdir: "{{ nextcloud_path }}"

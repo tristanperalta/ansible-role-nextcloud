@@ -9,3 +9,4 @@ nextcloud_database_port: 5432
 nextcloud_admin_user: default
 nextcloud_admin_password: secr3t
 nextcloud_path: "{{ web_dir }}/nextcloud"
+nextcloud_data_dir: "{{ web_dir }}/data"
