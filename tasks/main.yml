@@ -45,7 +45,17 @@
     group: "{{ web_group }}"
     mode: "u+rw,g+rw"
     remote_src: yes
-  when: false
+  when: nextcloud_install_method == 'remote'
+
+- name: copy from host nextcloud
+  unarchive:
+    src: files/nextcloud-15.0.0.tar.bz2
+    dest: "{{ web_dir }}"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    mode: "u+rw,g+rw"
+    remote_src: no
+  when: nextcloud_install_method == 'local'
 
 - name: add nextcloud database
   become: true
