@@ -1,0 +1,23 @@
+- name: install database
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - python3-psycopg2
+      - postgresql
+      - php-pgsql
+
+- name: add nextcloud database
+  become: true
+  become_user: postgres
+  postgresql_db:
+    name: "{{ nextcloud_database_name }}"
+
+- name: add nextcloud role in posgresql
+  become: true
+  become_user: postgres
+  postgresql_user:
+    db: "{{ nextcloud_database_name }}"
+    name: "{{ nextcloud_database_user }}"
+    password: "{{ nextcloud_database_password }}"
+

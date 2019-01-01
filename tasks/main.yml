@@ -1,5 +1,3 @@
-- include_tasks: web.yml
-
 - name: update and upgrade packages
   apt:
     update_cache: true
@@ -11,14 +9,19 @@
   register: apt_get_requires_reboot
   ignore_errors: True
 
+- include_tasks: web.yml
+  when: nextcloud_webserver == true
+
+- include_tasks: database.yml
+  when: nextcloud_database_remote == false
+
 - name: install required packages
   apt:
     name: "{{ packages }}"
   vars:
     packages:
-      - php7.2
       - bzip2
-      - libapache2-mod-php
+      - php7.2
       - php-gd
       - php-json
       - php-curl
@@ -27,15 +30,6 @@
       - php-imagick
       - php-xml
       - php-zip
-      - python3-psycopg2
-
-- name: install database
-  apt:
-    name: "{{ packages }}"
-  vars:
-    packages:
-      - postgresql
-      - php-pgsql
 
 - name: download nextcloud
   unarchive:
@@ -56,20 +50,6 @@
     mode: "u+rw,g+rw"
     remote_src: no
   when: nextcloud_install_method == 'local'
-
-- name: add nextcloud database
-  become: true
-  become_user: postgres
-  postgresql_db:
-    name: "{{ nextcloud_database_name }}"
-
-- name: add nextcloud role in posgresql
-  become: true
-  become_user: postgres
-  postgresql_user:
-    db: "{{ nextcloud_database_name }}"
-    name: "{{ nextcloud_database_user }}"
-    password: "{{ nextcloud_database_password }}"
 
 - name: make occ executable
   file:
@@ -93,21 +73,3 @@
   args:
     chdir: "{{ nextcloud_path }}"
   when: nextcloud_configured is failure
-
-
-- name: configure apache
-  template:
-    src: templates/apache-nextcloud.conf.j2
-    dest: /etc/apache2/sites-available/nextcloud.conf
-  notify: restart apache2
-
-- name: enable nextcloud config
-  shell: "a2ensite nextcloud"
-
-- name: restart machine
-  command: shutdown -r now "ansible updates triggered"
-  when: apt_get_requires_reboot is success
-  async: 0
-  poll: 0
-  ignore_errors: True
-
