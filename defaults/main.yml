@@ -1,14 +1,8 @@
 web_user: www-data
 web_group: www-data
 web_dir: /var/www
-nextcloud_database_host: localhost
-nextcloud_database_name: nextcloud
-nextcloud_database_user: nc_user
-nextcloud_database_password: c9ED89gkS4jbVSC3
-nextcloud_database_port: 5432
-nextcloud_admin_user: default
-nextcloud_admin_password: secr3t
 nextcloud_path: "{{ web_dir }}/nextcloud"
+nextcloud_database_port: 5432
 nextcloud_data_dir: "{{ nextcloud_path }}/data"
 nextcloud_webserver: true
 nextcloud_database_remote: false

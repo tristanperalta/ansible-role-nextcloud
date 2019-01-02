@@ -2,7 +2,12 @@
   become: true
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    nextcloud_install_method: local
+    nextcloud_database_host: localhost
+    nextcloud_database_name: nextcloud
+    nextcloud_database_user: nc_user
+    nextcloud_database_password: c9ED89gkS4jbVSC3
+    nextcloud_admin_user: default
+    nextcloud_admin_password: secr3t
 
   handlers:
     - name: restart apache2
