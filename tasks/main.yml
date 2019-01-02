@@ -31,6 +31,12 @@
       - php-xml
       - php-zip
 
+- name: check if installer is present locally
+  become: no
+  local_action: stat path="./files/nextcloud-15.0.0.tar.bz2"
+  register: nextcloud_installer_present
+  ignore_errors: true
+
 - name: download nextcloud
   unarchive:
     src: https://download.nextcloud.com/server/releases/nextcloud-15.0.0.tar.bz2
@@ -39,7 +45,7 @@
     group: "{{ web_group }}"
     mode: "u+rw,g+rw"
     remote_src: yes
-  when: nextcloud_install_method == 'remote'
+  when: nextcloud_installer_present is failure
 
 - name: copy from host nextcloud
   unarchive:
@@ -49,7 +55,7 @@
     group: "{{ web_group }}"
     mode: "u+rw,g+rw"
     remote_src: no
-  when: nextcloud_install_method == 'local'
+  when: nextcloud_installer_present is success
 
 - name: make occ executable
   file:
