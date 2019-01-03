@@ -26,5 +26,11 @@
     dest: /etc/apache2/sites-available/nextcloud.conf
   notify: restart apache2
 
+- name: disable default config
+  shell: "a2dissite 000-default"
+  notify: restart apache2
+
 - name: enable nextcloud config
   shell: "a2ensite nextcloud"
+  notify: restart apache2
+

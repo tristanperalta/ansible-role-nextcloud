@@ -1,10 +1,12 @@
-Alias /nextcloud "{{ nextcloud_path }}"
-<Directory {{ nextcloud_path }}/>
-  Options +FollowSymlinks
-  AllowOverride All
-  <IfModule mod_dav.c>
-    Dav off
-  </IfModule>
-  SetEnv HOME {{ nextcloud_path }}
-  SetEnv HTTP_HOME {{ nextcloud_path }}
-</Directory>
+<VirtualHost *:80>
+  DocumentRoot {{ nextcloud_path }}
+  <Directory {{ nextcloud_path }}/>
+    Options +FollowSymlinks
+    AllowOverride All
+    <IfModule mod_dav.c>
+      Dav off
+    </IfModule>
+    SetEnv HOME {{ nextcloud_path }}
+    SetEnv HTTP_HOME {{ nextcloud_path }}
+  </Directory>
+</VirtualHost>
