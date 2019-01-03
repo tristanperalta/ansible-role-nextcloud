@@ -9,8 +9,6 @@
   register: apt_get_requires_reboot
   ignore_errors: True
 
-- debug:
-    msg: "{{ nextcloud_webserver }}"
 - include_tasks: php-fpm.yml
   when: nextcloud_webserver == false
 
