@@ -10,7 +10,7 @@
   ignore_errors: True
 
 - include_tasks: php-fpm.yml
-  when: nextcloud_webserver == false
+  when: nextcloud_webserver == true
 
 - include_tasks: web.yml
   when: nextcloud_webserver == true
