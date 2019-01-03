@@ -1,0 +1,16 @@
+- name: install nginx
+  apt:
+    name: nginx
+
+- name: configure nginx
+  template:
+    src: templates/nginx-nextcloud.conf.j2
+    dest: /etc/nginx/sites-available/nextcloud
+  notify: restart nginx
+
+- name: enable nextcloud site
+  file:
+    src: /etc/nginx/sites-available/nextcloud
+    dest: /etc/nginx/sites-enabled/nextcloud
+    state: link
+

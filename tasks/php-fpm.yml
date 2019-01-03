@@ -1,0 +1,15 @@
+- name: install php-fpm
+  apt:
+    name: php-fpm
+
+- name: delete www pool
+  file:
+    path: /etc/php/7.2/fpm/pool.d/www.conf
+    state: absent
+
+- name: configure nextcloud pool
+  template:
+    src: templates/php-fpm.conf.j2
+    dest: /etc/php/7.2/fpm/pool.d/nextcloud.conf
+  notify: restart php-fpm
+

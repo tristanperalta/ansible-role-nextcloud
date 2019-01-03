@@ -1,0 +1,23 @@
+- name: install apache
+  apt:
+    name: apache2
+  vars:
+    packages:
+      - apache2
+      - libapache2-mod-php
+
+- name: configure apache
+  template:
+    src: templates/apache-nextcloud.conf.j2
+    dest: /etc/apache2/sites-available/nextcloud.conf
+  notify: restart apache2
+
+
+- name: disable default config
+  shell: "a2dissite 000-default"
+  notify: restart apache2
+
+- name: enable nextcloud config
+  shell: "a2ensite nextcloud"
+  notify: restart apache2
+

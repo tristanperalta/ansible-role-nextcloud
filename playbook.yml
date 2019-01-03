@@ -8,11 +8,22 @@
     nextcloud_database_password: c9ED89gkS4jbVSC3
     nextcloud_admin_user: default
     nextcloud_admin_password: secr3t
+    nextcloud_webserver: false
 
   handlers:
     - name: restart apache2
       service:
         name: apache2
+        state: restarted
+
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: restart php-fpm
+      service:
+        name: php7.2-fpm
         state: restarted
 
   tasks:
