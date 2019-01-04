@@ -10,10 +10,8 @@
   ignore_errors: True
 
 - include_tasks: php-fpm.yml
-  when: nextcloud_webserver == true
 
 - include_tasks: web.yml
-  when: nextcloud_webserver == true
 
 - include_tasks: database.yml
   when: nextcloud_database_remote == false
@@ -50,7 +48,7 @@
     remote_src: yes
   when: nextcloud_installer_present.stat.exists == false
 
-- name: copy from host nextcloud
+- name: copy installer from host
   unarchive:
     src: files/nextcloud-15.0.0.tar.bz2
     dest: "{{ web_dir }}"

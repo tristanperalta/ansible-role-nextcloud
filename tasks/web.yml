@@ -12,8 +12,4 @@
     group: "{{ web_group }}"
     recurse: true
 
-- include_tasks: ./apache.yml
-  when: false
-
-- include_tasks: ./nginx.yml
-  when: true
+- include_tasks: "./{{ nextcloud_webserver }}.yml"

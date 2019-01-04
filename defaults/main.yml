@@ -4,5 +4,5 @@ web_dir: /var/www
 nextcloud_path: "{{ web_dir }}/nextcloud"
 nextcloud_database_port: 5432
 nextcloud_data_dir: "{{ nextcloud_path }}/data"
-nextcloud_webserver: true
+nextcloud_webserver: 'nginx'
 nextcloud_database_remote: false
