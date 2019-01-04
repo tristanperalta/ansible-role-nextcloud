@@ -9,3 +9,13 @@
   async: 0
   poll: 0
   ignore_errors: True
+
+- name: restart php-fpm
+  service:
+    name: php7.2-fpm
+    state: restarted
+
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted

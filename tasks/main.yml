@@ -48,7 +48,7 @@
     group: "{{ web_group }}"
     mode: "u+rw,g+rw"
     remote_src: yes
-  when: nextcloud_installer_present is failure
+  when: nextcloud_installer_present.stat.exists == false
 
 - name: copy from host nextcloud
   unarchive:
@@ -58,7 +58,7 @@
     group: "{{ web_group }}"
     mode: "u+rw,g+rw"
     remote_src: no
-  when: nextcloud_installer_present is success
+  when: nextcloud_installer_present.stat.exists == true
 
 - name: make occ executable
   file:
