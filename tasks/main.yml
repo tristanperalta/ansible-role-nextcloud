@@ -9,9 +9,9 @@
   register: apt_get_requires_reboot
   ignore_errors: True
 
-- include_tasks: php-fpm.yml
-
 - include_tasks: web.yml
+
+- include_tasks: php-fpm.yml
 
 - include_tasks: database.yml
   when: nextcloud_database_remote == false
@@ -80,3 +80,16 @@
   args:
     chdir: "{{ nextcloud_path }}"
   when: nextcloud_configured is failure
+
+- name: configure nextcloud pool
+  template:
+    src: templates/php-fpm.conf.j2
+    dest: /etc/php/7.2/fpm/pool.d/nextcloud.conf
+  notify: restart php-fpm
+
+- name: delete www pool
+  file:
+    path: /etc/php/7.2/fpm/pool.d/www.conf
+    state: absent
+  notify: restart php-fpm
+

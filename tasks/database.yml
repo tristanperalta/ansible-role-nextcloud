@@ -3,7 +3,6 @@
     name: "{{ packages }}"
   vars:
     packages:
-      - python3-psycopg2
       - postgresql
       - php-pgsql
 
